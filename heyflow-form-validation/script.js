@@ -53,7 +53,7 @@
 
         //if the value matches a valid RegEx:
         if ((/^(\(\d{3}\) \d{3}-\d{4})$/i).test(inputValue)) {
-            console.log('Input value matches a valid RegEx!');
+            //console.log('Input value matches a valid RegEx!');
 
             //disable the submit buttons: 
             $submitBtn.disabled = true;
@@ -237,13 +237,13 @@
 
                     //if response is invalid number: 
                     if (!response.phone_valid) {
-                        console.warn('Invalid phone number!');
+                        //console.warn('Invalid phone number!');
                         //show error message:
                         $inputContainer.classList.add('__error');
 
                         //if response is valid number: 
                     } else {
-                        console.log('Valid phone number!');
+                        //console.log('Valid phone number!');
                         //remove the error message: 
                         $inputContainer.classList.remove('__error');
 
