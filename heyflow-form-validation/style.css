@@ -1,0 +1,47 @@
+
+button.submit.__disabled,
+button.continue.__disabled,
+button.submit.__disabled:hover,
+button.continue.__disabled:hover,
+button.submit.__disabled:active,
+button.continue.__disabled:active {
+    cursor: not-allowed !important;
+    background: #ccc !important;
+}
+
+.input.__error input {
+    border-top: 1px solid #d0011b;
+    border-right: 1px solid #d0011b;
+    border-bottom: none;
+    border-bottom-right-radius: 0;
+}
+
+.input.__error .input-prefix {
+    border: 1px solid #d0011b;
+    border-bottom-left-radius: 0;
+    border-bottom: none;
+}
+
+.input.__error .error-box {
+    display: flex;
+}
+
+._loading-spinner {
+    display: flex;
+    min-height: 1.5em;
+    min-width: 1.5em;
+    margin-left: 1em;
+}
+
+._loading-spinner ._spinner {
+    animation: loading-spinner 1s linear infinite;
+}
+
+@keyframes loading-spinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
