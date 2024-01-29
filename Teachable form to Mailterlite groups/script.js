@@ -16,9 +16,6 @@ function createCourseMailingList(mailterliteCourseGroupID) {
         console.groupEnd('createCourseMailingList');
         return;
     }
-    if (!groupId || $.type(groupId) !== 'string' || !groupIdRegEx.test(groupId)) {
-        response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by comma!');
-    }
 
     if (!$(`#${sectionElementID}`).length) {
         console.error('The HTML <section> element is NOT found in the DOM! Insert it into the Teachable custom HTML block first!');
