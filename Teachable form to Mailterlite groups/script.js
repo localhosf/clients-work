@@ -1,4 +1,5 @@
 
+
 //TODO: update this to the URL of the Google Apps Script link;
 const API_endpoint = 'https://script.google.com/macros/s/AKfycbyvzJdT7qMR40bQu_M3UTevPN_BOJU1oUQUrhz1P9CiiCKAM_Lk4xnyGBcYx5ago8FKXg/exec';
 const sectionElementID = 'mailterlite-course-mailing-list';
@@ -64,7 +65,7 @@ function listenToCourseLeadsForm() {
     let $form = $(`#${sectionElementID}`).find('form');
 
     let response = {
-        'success': false,
+        'success': true,
         'message': [],
     };
 
@@ -79,10 +80,12 @@ function listenToCourseLeadsForm() {
 
         //validate the inputs:
         if (!email || $.type(email) !== 'string' || !emailRegEx.test(email)) {
+            response.success = false;
             response.message.push('[email] is invalid or missing! expecting a valid email string!');
         }
 
         if (!groupId || $.type(groupId) !== 'string' || !groupIdRegEx.test(groupId)) {
+            response.success = false;
             response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by comma!');
         }
 
@@ -91,10 +94,10 @@ function listenToCourseLeadsForm() {
         }
 
         //send the inputs to the API and handle its response:
-        sendUserToAPI(groupId, email, function (response) {
-            console.log('API response:', response);
+        sendUserToAPI(groupId, email, function (apiResponse) {
+            console.log('API response:', apiResponse);
 
-            printResponse(response);
+            printResponse(apiResponse);
         });
 
     });
