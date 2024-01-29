@@ -1,5 +1,4 @@
 
-
 //TODO: update this to the URL of the Google Apps Script link;
 const API_endpoint = 'https://script.google.com/macros/s/AKfycbyvzJdT7qMR40bQu_M3UTevPN_BOJU1oUQUrhz1P9CiiCKAM_Lk4xnyGBcYx5ago8FKXg/exec';
 const sectionElementID = 'mailterlite-course-mailing-list';
@@ -88,7 +87,7 @@ function listenToCourseLeadsForm() {
             response.success = false;
             response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by comma!');
         }
-        
+
         console.log('response so far:', response);
 
         if (!response.success) {
@@ -110,7 +109,6 @@ function listenToCourseLeadsForm() {
 
 
 function sendUserToAPI(groupId, email, callback) {
-    //console.trace();
     console.group('sendUserToAPI');
     console.log('groupId:', groupId);
     console.log('email:', email);
@@ -126,7 +124,7 @@ function sendUserToAPI(groupId, email, callback) {
                     if (!headResponse.ok) {
                         throw new Error(`Server response is NOT ok! status: ${headResponse.status}`);
                     }
-                    return fetch(url, {method: 'GET', cache: 'no-cache'});
+                    return fetch(url, {method: 'GET', cache: 'no-cache', mode: 'no-cors'});
                 })
                 .then(function (getResponse) {
                     if (!getResponse.ok) {
