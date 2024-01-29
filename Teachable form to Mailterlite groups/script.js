@@ -2,17 +2,22 @@
 //TODO: update this to the URL of the Google Apps Script link;
 const API_endpoint = 'https://script.google.com/macros/s/AKfycbyvzJdT7qMR40bQu_M3UTevPN_BOJU1oUQUrhz1P9CiiCKAM_Lk4xnyGBcYx5ago8FKXg/exec';
 const sectionElementID = 'mailterlite-course-mailing-list';
-
+const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const groupIdRegEx = /^[0-9]+(?:,[0-9]+)*$/;
 
 
 function createCourseMailingList(mailterliteCourseGroupID) {
     console.group('createCourseMailingList');
     console.log('mailterliteCourseGroupID:', mailterliteCourseGroupID);
 
-    if (!mailterliteCourseGroupID || $.type(mailterliteCourseGroupID) !== 'number') {
-        console.error('[mailterliteCourseGroupID] argument is invalid or missing! expecting a number!');
+    if (!mailterliteCourseGroupID || $.type(mailterliteCourseGroupID) !== 'string'
+            || !groupIdRegEx.test(mailterliteCourseGroupID)) {
+        console.error('[mailterliteCourseGroupID] argument is invalid or missing! expecting one or more numbers separated by comma!');
         console.groupEnd('createCourseMailingList');
         return;
+    }
+    if (!e.groupId || $.type(groupId) !== 'string' || !groupIdRegEx.test(groupId)) {
+        response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by comma!');
     }
 
     if (!$(`#${sectionElementID}`).length) {
@@ -22,29 +27,29 @@ function createCourseMailingList(mailterliteCourseGroupID) {
     }
 
     let html = `
-                <form id="${mailterliteCourseGroupID}" onsubmit="return false">
-                    <h4>
-                        <strong>Interested in this course?</strong>
-                    </h4>
-                    <p>Join the waiting list!</p>
-                    <fieldset>
-                        <div>
-                            <label for="email">Email Address</label>
-                            <input type="email" name="email" class="block__email_leads__input" required="">
-                        </div>
-                        <div class="block__email_leads__checkbox_wrapper">
-                            <input type="checkbox" name="consent" class="block__email_leads__checkbox" required="">
-                            <label for="consent">
-                                By clicking this checkbox, you consent to receiving emails from our school.
-                            </label>
-                        </div>
-                    </fieldset>
-                    <button class="base-button" type="submit">Subscribe</button>
-                    <p class="disclaimer_text">We respect your privacy.</p>
-                    <div class="block__email_leads__response"></div>
-                </form>
+    <form id="${mailterliteCourseGroupID}" onsubmit="return false">
+        <h4>
+            <strong>Interested in this course?</strong>
+        </h4>
+        <p>Join the waiting list!</p>
+        <fieldset>
+            <div>
+                <label for="email">Email Address</label>
+                <input type="email" name="email" class="block__email_leads__input" required="">
+            </div>
+            <div class="block__email_leads__checkbox_wrapper">
+                <input type="checkbox" name="consent" class="block__email_leads__checkbox" required="">
+                <label for="consent">
+                    By clicking this checkbox, you consent to receiving emails from our school.
+                </label>
+            </div>
+        </fieldset>
+        <button class="base-button" type="submit">Subscribe</button>
+        <p class="disclaimer_text">We respect your privacy.</p>
+        <div class="block__email_leads__response"></div>
+    </form>
 
-            `;
+`;
 
     $(`#${sectionElementID}`).append(html);
 
@@ -59,8 +64,6 @@ function createCourseMailingList(mailterliteCourseGroupID) {
 function listenToCourseLeadsForm() {
     console.group('listenToCourseLeadsForm');
 
-    const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const groupIdRegEx = /^[0-9]+(?:,[0-9]+)*$/;
     let $form = $(`#${sectionElementID}`).find('form');
 
     let response = {
@@ -216,16 +219,17 @@ function printResponse(response) {
     }());
 
     let html = `
-                <div class="${responseType}" 
-                     style="margin: 1em; padding: 1em; border-radius: 0.5em; ${styleString}"> 
-                        ${message}
-                </div>
-            `;
+    <div class="${responseType}" 
+         style="margin: 1em; padding: 1em; border-radius: 0.5em; ${styleString}"> 
+            ${message}
+    </div>
+`;
 
     $($responseEl).html(html);
 
     console.groupEnd('printResponse');
 
 }
+
 
 
