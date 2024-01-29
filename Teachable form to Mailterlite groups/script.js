@@ -88,6 +88,8 @@ function listenToCourseLeadsForm() {
             response.success = false;
             response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by comma!');
         }
+        
+        console.log('response so far:', response);
 
         if (!response.success) {
             return printResponse(response);
