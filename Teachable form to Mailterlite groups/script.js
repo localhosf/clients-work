@@ -24,7 +24,7 @@ function createCourseMailingList(mailterliteCourseGroupID) {
     }
 
     let html = `
-    <form id="${mailterliteCourseGroupID}" onsubmit="return false">
+    <form data-groupId="${mailterliteCourseGroupID}" onsubmit="return false">
         <h4>
             <strong>Interested in this course?</strong>
         </h4>
@@ -73,7 +73,7 @@ function listenToCourseLeadsForm() {
         console.log('e:', e);
 
         //get the inputs: 
-        const groupId = Number($(this).attr('id'));
+        const groupId = $(this).attr('data-groupId');
         const email = $(this).find('input[name="email"]').val();
         console.log(`groupId: ${groupId} | email: ${email}`);
 
@@ -227,6 +227,5 @@ function printResponse(response) {
     console.groupEnd('printResponse');
 
 }
-
 
 
