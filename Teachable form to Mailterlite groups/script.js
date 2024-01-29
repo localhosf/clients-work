@@ -24,29 +24,28 @@ function createCourseMailingList(mailterliteCourseGroupID) {
     }
 
     let html = `
-    <form data-groupId="${mailterliteCourseGroupID}" onsubmit="return false">
-        <h4>
-            <strong>Interested in this course?</strong>
-        </h4>
-        <p>Join the waiting list!</p>
-        <fieldset>
-            <div>
-                <label for="email">Email Address</label>
-                <input type="email" name="email" class="block__email_leads__input" required="">
-            </div>
-            <div class="block__email_leads__checkbox_wrapper">
-                <input type="checkbox" name="consent" class="block__email_leads__checkbox" required="">
-                <label for="consent">
-                    By clicking this checkbox, you consent to receiving emails from our school.
-                </label>
-            </div>
-        </fieldset>
-        <button class="base-button" type="submit">Subscribe</button>
-        <p class="disclaimer_text">We respect your privacy.</p>
-        <div class="block__email_leads__response"></div>
-    </form>
-
-`;
+                <form data-groupId="${mailterliteCourseGroupID}" onsubmit="return false">
+                    <h4>
+                        <strong>Interested in this course?</strong>
+                    </h4>
+                    <p>Join the waiting list!</p>
+                    <fieldset>
+                        <div>
+                            <label for="email">Email Address</label>
+                            <input type="email" name="email" class="block__email_leads__input" required="">
+                        </div>
+                        <div class="block__email_leads__checkbox_wrapper">
+                            <input type="checkbox" name="consent" class="block__email_leads__checkbox" required="">
+                            <label for="consent">
+                                By clicking this checkbox, you consent to receiving emails from our school.
+                            </label>
+                        </div>
+                    </fieldset>
+                    <button class="base-button" type="submit">Subscribe</button>
+                    <p class="disclaimer_text">We respect your privacy.</p>
+                    <div class="block__email_leads__response"></div>
+                </form>
+            `;
 
     $(`#${sectionElementID}`).append(html);
 
@@ -119,13 +118,13 @@ function sendUserToAPI(groupId, email, callback) {
     function sendRequest() {
         const url = `${API_endpoint}?groupId=${groupId}&email=${email}`;
 
-        fetch(url, {method: 'HEAD'})
-                .then(function (headResponse) {
-                    if (!headResponse.ok) {
-                        throw new Error(`Server response is NOT ok! status: ${headResponse.status}`);
-                    }
-                    return fetch(url, {method: 'GET', cache: 'no-cache', mode: 'no-cors'});
-                })
+        fetch(url, {
+            redirect: "follow",
+            method: "GET",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            }
+        })
                 .then(function (getResponse) {
                     if (!getResponse.ok) {
                         throw new Error(`Server response is NOT ok! status: ${getResponse.status}`);
@@ -219,16 +218,14 @@ function printResponse(response) {
     }());
 
     let html = `
-    <div class="${responseType}" 
-         style="margin: 1em; padding: 1em; border-radius: 0.5em; ${styleString}"> 
-            ${message}
-    </div>
-`;
+            <div class="${responseType}" 
+                style="margin: 1em; padding: 1em; border-radius: 0.5em; ${styleString}"> 
+                ${message}
+            </div>
+        `;
 
     $($responseEl).html(html);
 
     console.groupEnd('printResponse');
 
 }
-
-
