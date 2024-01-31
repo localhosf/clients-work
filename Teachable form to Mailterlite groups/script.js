@@ -1,9 +1,13 @@
 
+"use strict";
+
 //TODO: update this to the URL of the Google Apps Script link;
-const API_endpoint = 'https://script.google.com/macros/s/AKfycbweU28s9hr-PQ-bxHxJeTGGp15zWmhrrCWCFQPYTOnH00fve38EQD-yONIkcfiNNCpE/exec';
-const sectionElementID = 'mailterlite-course-mailing-list';
+const API_endpoint = 'https://script.google.com/macros/s/AKfycbwewaVfWivfWSqwkojFGLIPAmYlZWih6hXywGKg9gow/dev';
 const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const groupIdRegEx = /^[0-9]+(?:,[0-9]+)*$/;
+const sectionElementID = 'mailterlite-course-mailing-list';
+const coursePath = window.location.pathname.split('p/')[1];
+const localStorageName = coursePath + '__subscribed-in-course';
 
 
 function createCourseMailingList(mailterliteCourseGroupID) {
@@ -17,6 +21,14 @@ function createCourseMailingList(mailterliteCourseGroupID) {
         return;
     }
 
+    //if the user subscribed in this course before, don't create a form and end:
+    if (localStorage.getItem(localStorageName) === 'true') {
+        console.log('user has already subscribed in this course before!');
+        console.groupEnd('createCourseMailingList');
+        return;
+    }
+
+
     if (!$(`#${sectionElementID}`).length) {
         console.error('The HTML <section> element is NOT found in the DOM! Insert it into the Teachable custom HTML block first!');
         console.groupEnd('createCourseMailingList');
@@ -25,24 +37,26 @@ function createCourseMailingList(mailterliteCourseGroupID) {
 
     let html = `
                 <form data-groupId="${mailterliteCourseGroupID}" onsubmit="return false">
-                    <h4>
-                        <strong>Interested in this course?</strong>
-                    </h4>
-                    <p>Join the waiting list!</p>
-                    <fieldset>
-                        <div>
-                            <label for="email">Email Address</label>
-                            <input type="email" name="email" class="block__email_leads__input" required="">
-                        </div>
-                        <div class="block__email_leads__checkbox_wrapper">
-                            <input type="checkbox" name="consent" class="block__email_leads__checkbox" required="">
-                            <label for="consent">
-                                By clicking this checkbox, you consent to receiving emails from our school.
-                            </label>
-                        </div>
-                    </fieldset>
-                    <button class="base-button" type="submit">Subscribe</button>
-                    <p class="disclaimer_text">We respect your privacy.</p>
+                    <div class="form-body">
+                        <h4>
+                            <strong>Interested in this course?</strong>
+                        </h4>
+                        <p>Join the waiting list!</p>
+                        <fieldset>
+                            <div>
+                                <label for="email">Email Address</label>
+                                <input type="email" name="email" class="block__email_leads__input" required="">
+                            </div>
+                            <div class="block__email_leads__checkbox_wrapper">
+                                <input type="checkbox" name="consent" class="block__email_leads__checkbox" required="">
+                                <label for="consent">
+                                    By clicking this checkbox, you consent to receiving emails from our school.
+                                </label>
+                            </div>
+                        </fieldset>
+                        <button class="base-button" type="submit">Subscribe</button>
+                        <p class="disclaimer_text">We respect your privacy.</p>
+                    </div>
                     <div class="block__email_leads__response"></div>
                 </form>
             `;
@@ -84,7 +98,7 @@ function listenToCourseLeadsForm() {
 
         if (!groupId || $.type(groupId) !== 'string' || !groupIdRegEx.test(groupId)) {
             response.success = false;
-            response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by comma!');
+            response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by commas!');
         }
 
         console.log('response so far:', response);
@@ -180,7 +194,8 @@ function printResponse(response) {
     console.log('response:', response);
 
     let $form = $(`#${sectionElementID}`).find('form');
-    let $responseEl = $($form).find('.block__email_leads__response');
+    let $formBody = $($form).find('.form-body');
+    let $formResponse = $($form).find('.block__email_leads__response');
     let responseType;
     let message;
     let style = {
@@ -208,26 +223,39 @@ function printResponse(response) {
             if (!response.message || !response.message.length) {
                 return 'Internal server error!';
             }
-            return '<ul><li>' + response.message.join('</li>') + '</ul>';
+            if (response.message.length === 1) {
+                return response.message.join();
+            }
+            return '<ul><li>' + response.message.join('</li><li>') + '</li></ul>';
         }());
     }
 
     let styleString = (function () {
         let string;
         for (let key in style[responseType]) {
-            string += `${key}: ${style[responseType][key]}; `;
+            if (key) {
+                string += `${key}: ${style[responseType][key]}; `;
+            }
         }
         return string;
     }());
 
     let html = `
-            <div class="${responseType}" 
-                style="margin: 1em; padding: 1em; border-radius: 0.5em; ${styleString}"> 
-                ${message}
-            </div>
-        `;
+                <div class="${responseType}" 
+                    style="font-size: 2em; margin: 1em; padding: 1em; border-radius: 0.5em; ${styleString}"> 
+                    ${message}
+                </div>
+            `;
 
-    $($responseEl).html(html);
+    $($formResponse).html(html);
+
+    if (responseType === 'success') {
+        $($formBody).hide();
+
+        //save a value to the browser's localStorage, to avoid showing the form again: 
+        localStorage.setItem(localStorageName, 'true');
+
+    }
 
     console.groupEnd('printResponse');
 
