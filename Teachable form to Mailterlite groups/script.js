@@ -135,6 +135,7 @@ function sendUserToAPI(groupId, email, callback) {
         fetch(url, {
             redirect: "follow",
             method: "GET",
+            mode: 'no-cors',
             headers: {
                 "Content-Type": "text/plain;charset=utf-8",
             }
@@ -260,5 +261,9 @@ function printResponse(response) {
     console.groupEnd('printResponse');
 
 }
+
+
+
+
 
 
