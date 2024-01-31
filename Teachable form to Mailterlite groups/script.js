@@ -156,8 +156,10 @@ function sendUserToAPI(groupId, email, callback) {
 
         function handleSuccessResponse(response) {
             console.log('API response success!\nresponse:', response);
-            console.log('typeof response:', typeof response);
-            
+            if (typeof response === 'string') {
+                response = JSON.parse(response);
+            }
+
             console.groupEnd('sendUserToAPI');
             //call the callback function, if any;
             if (callback && typeof callback === 'function') {
