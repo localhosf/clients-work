@@ -264,6 +264,3 @@ function printResponse(response) {
 
 
 
-
-
-
