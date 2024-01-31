@@ -1,6 +1,6 @@
 
 //TODO: update this to the URL of the Google Apps Script link;
-const API_endpoint = 'https://script.google.com/macros/s/AKfycbxrmvI1l2jPcn4TPEFOGTXcYHdlS5McpH2Ejmmi8xB7cn1fMzQ1N5vLqrA0ExbF7xpSjQ/exec';
+const API_endpoint = 'https://script.google.com/macros/s/AKfycbweU28s9hr-PQ-bxHxJeTGGp15zWmhrrCWCFQPYTOnH00fve38EQD-yONIkcfiNNCpE/exec';
 const sectionElementID = 'mailterlite-course-mailing-list';
 const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const groupIdRegEx = /^[0-9]+(?:,[0-9]+)*$/;
