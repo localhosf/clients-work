@@ -7,7 +7,7 @@ const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 const groupsRegEx = /^[0-9]+(?:,[0-9]+)*$/;
 const sectionElementID = 'mailterlite-course-mailing-list';
 const coursePath = window.location.pathname.split('/').pop();
-const localStorageName = coursePath + '__subscribed-in-course';
+const localStorageName = 'subscribed-in-course__' + coursePath;
 
 
 function createCourseMailingList(mailterliteCourseGroupIDs) {
