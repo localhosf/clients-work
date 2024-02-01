@@ -2,7 +2,7 @@
 "use strict";
 
 //TODO: update this to the URL of the Google Apps Script link;
-const API_endpoint = 'https://script.google.com/macros/s/AKfycbzunFGuOBh3IUiAja7CkNN7bIHgje-xTI1aLoM-I_NpmU_wY2QXBkxwhFX8ycqBjNnIqQ/exec';
+const API_endpoint = 'https://script.google.com/macros/s/AKfycbzSuou14R4o_dhqyNXDF7pGthmhcQrH0LGfUGhJiKq-L5ym_JJuQbVSLjKVzDvhQmzszw/exec';
 const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const groupsRegEx = /^[0-9]+(?:,[0-9]+)*$/;
 const sectionElementID = 'mailterlite-course-mailing-list';
@@ -221,13 +221,13 @@ function printResponse(response) {
     } else {
         responseType = (response.success) ? 'success' : 'fail';
         message = (function () {
-            if (!response.message || !response.message.length) {
+            if (!response.userMessage || !response.userMessage.length) {
                 return 'Internal server error!';
             }
-            if (response.message.length === 1) {
-                return response.message.join();
+            if (response.userMessage.length === 1) {
+                return response.userMessage.join();
             }
-            return '<ul><li>' + response.message.join('</li><li>') + '</li></ul>';
+            return '<ul><li>' + response.userMessage.join('</li><li>') + '</li></ul>';
         }());
     }
 
@@ -240,6 +240,8 @@ function printResponse(response) {
         }
         return string;
     }());
+    
+    console.log('styleString:', styleString);
 
     let html = `
                 <div class="${responseType}" 
@@ -261,6 +263,8 @@ function printResponse(response) {
     console.groupEnd('printResponse');
 
 }
+
+
 
 
 
