@@ -2,21 +2,21 @@
 "use strict";
 
 //TODO: update this to the URL of the Google Apps Script link;
-const API_endpoint = 'https://script.google.com/macros/s/AKfycbwewaVfWivfWSqwkojFGLIPAmYlZWih6hXywGKg9gow/dev';
+const API_endpoint = 'https://script.google.com/macros/s/AKfycbzunFGuOBh3IUiAja7CkNN7bIHgje-xTI1aLoM-I_NpmU_wY2QXBkxwhFX8ycqBjNnIqQ/exec';
 const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const groupIdRegEx = /^[0-9]+(?:,[0-9]+)*$/;
+const groupsRegEx = /^[0-9]+(?:,[0-9]+)*$/;
 const sectionElementID = 'mailterlite-course-mailing-list';
 const coursePath = window.location.pathname.split('p/')[1];
 const localStorageName = coursePath + '__subscribed-in-course';
 
 
-function createCourseMailingList(mailterliteCourseGroupID) {
+function createCourseMailingList(mailterliteCourseGroupIDs) {
     console.group('createCourseMailingList');
-    console.log('mailterliteCourseGroupID:', mailterliteCourseGroupID);
+    console.log('mailterliteCourseGroupIDs:', mailterliteCourseGroupIDs);
 
-    if (!mailterliteCourseGroupID || $.type(mailterliteCourseGroupID) !== 'string'
-            || !groupIdRegEx.test(mailterliteCourseGroupID)) {
-        console.error('[mailterliteCourseGroupID] argument is invalid or missing! expecting one or more numbers separated by comma!');
+    if (!mailterliteCourseGroupIDs || $.type(mailterliteCourseGroupIDs) !== 'string'
+            || !groupsRegEx.test(mailterliteCourseGroupIDs)) {
+        console.error('[mailterliteCourseGroupIDs] argument is invalid or missing! expecting one or more numbers separated by commas!');
         console.groupEnd('createCourseMailingList');
         return;
     }
@@ -36,7 +36,7 @@ function createCourseMailingList(mailterliteCourseGroupID) {
     }
 
     let html = `
-                <form data-groupId="${mailterliteCourseGroupID}" onsubmit="return false">
+                <form data-groups="${mailterliteCourseGroupIDs}" onsubmit="return false">
                     <div class="form-body">
                         <h4>
                             <strong>Interested in this course?</strong>
@@ -86,9 +86,9 @@ function listenToCourseLeadsForm() {
         console.log('e:', e);
 
         //get the inputs: 
-        const groupId = $(this).attr('data-groupId');
+        const groups = $(this).attr('data-groups');
         const email = $(this).find('input[name="email"]').val();
-        console.log(`groupId: ${groupId} | email: ${email}`);
+        console.log(`groups: ${groups} | email: ${email}`);
 
         //validate the inputs:
         if (!email || $.type(email) !== 'string' || !emailRegEx.test(email)) {
@@ -96,9 +96,9 @@ function listenToCourseLeadsForm() {
             response.message.push('[email] is invalid or missing! expecting a valid email string!');
         }
 
-        if (!groupId || $.type(groupId) !== 'string' || !groupIdRegEx.test(groupId)) {
+        if (!groups || $.type(groups) !== 'string' || !groupsRegEx.test(groups)) {
             response.success = false;
-            response.message.push('[groupId] is invalid or missing! expecting one or more numbers separated by commas!');
+            response.message.push('[groups] is invalid or missing! expecting one or more numbers separated by commas!');
         }
 
         console.log('response so far:', response);
@@ -108,7 +108,7 @@ function listenToCourseLeadsForm() {
         }
 
         //send the inputs to the API and handle its response:
-        sendUserToAPI(groupId, email, function (apiResponse) {
+        sendUserToAPI(groups, email, function (apiResponse) {
             console.log('API response:', apiResponse);
 
             printResponse(apiResponse);
@@ -121,21 +121,21 @@ function listenToCourseLeadsForm() {
 
 
 
-function sendUserToAPI(groupId, email, callback) {
+function sendUserToAPI(groups, email, callback) {
     console.group('sendUserToAPI');
-    console.log('groupId:', groupId);
+    console.log('groups:', groups);
     console.log('email:', email);
 
     let retryTimes = 3;
     let retryInterval = 1000;
 
     function sendRequest() {
-        const url = `${API_endpoint}?groupId=${groupId}&email=${email}`;
+        const url = `${API_endpoint}?groups=${groups}&email=${email}`;
 
         fetch(url, {
             redirect: "follow",
             method: "GET",
-            mode: 'no-cors',
+            //mode: 'no-cors',
             headers: {
                 "Content-Type": "text/plain;charset=utf-8",
             }
@@ -261,6 +261,7 @@ function printResponse(response) {
     console.groupEnd('printResponse');
 
 }
+
 
 
 
