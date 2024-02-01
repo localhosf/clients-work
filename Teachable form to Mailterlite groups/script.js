@@ -132,48 +132,6 @@ function listenToCourseLeadsForm() {
 
 
 
-function styleSubmitButtonLoading() {
-    console.group('styleSubmitButtonLoading');
-
-
-
-    const style = `
-        @keyframes rotate-forever {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        .loading-spinner {
-          animation-duration: 0.75s;
-          animation-iteration-count: infinite;
-          animation-name: rotate-forever;
-          animation-timing-function: linear;
-          height: 30px;
-          width: 30px;
-          border: 8px solid #ffffff;
-          border-right-color: transparent;
-          border-radius: 50%;
-          display: inline-block;
-
-          position: absolute;
-          top: 50%;
-          right: 0;
-          bottom: 0;
-          left: 50%;
-          margin: -15px 0 -15px;
-        }
-    `;
-
-
-    console.groupEnd('styleSubmitButtonLoading');
-
-}
-
-
-
 function sendUserToAPI(groups, email, callback) {
     console.group('sendUserToAPI');
     console.log('groups:', groups);
