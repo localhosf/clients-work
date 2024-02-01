@@ -2,7 +2,7 @@
 "use strict";
 
 //TODO: update this to the URL of the Google Apps Script link;
-const API_endpoint = 'https://script.google.com/macros/s/AKfycbzSuou14R4o_dhqyNXDF7pGthmhcQrH0LGfUGhJiKq-L5ym_JJuQbVSLjKVzDvhQmzszw/exec';
+const API_endpoint = 'https://script.google.com/macros/s/AKfycbyhIoBELSHxepVeNq7RhPLPeRiVm0868qsuferb9wxaT4Va3SLV8l_5W0FmV5e9EEqVKA/exec';
 const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const groupsRegEx = /^[0-9]+(?:,[0-9]+)*$/;
 const sectionElementID = 'mailterlite-course-mailing-list';
@@ -75,6 +75,7 @@ function listenToCourseLeadsForm() {
     console.group('listenToCourseLeadsForm');
 
     let $form = $(`#${sectionElementID}`).find('form');
+    let $submitButton = $($form).find('button[type="submit"]');
 
     let response = {
         'success': true,
@@ -84,6 +85,10 @@ function listenToCourseLeadsForm() {
     $($form).on('submit', function (e) {
         console.log('form submit event!');
         console.log('e:', e);
+
+        if ($($form).hasClass('_loading')) {
+            return;
+        }
 
         //get the inputs: 
         const groups = $(this).attr('data-groups');
@@ -107,6 +112,12 @@ function listenToCourseLeadsForm() {
             return printResponse(response);
         }
 
+        $($form).addClass('_loading');
+        $($submitButton)
+                .text('Loading ...')
+                .attr('style', 'background: lightgray; color: #333; cursor: not-allowed;')
+                ;
+
         //send the inputs to the API and handle its response:
         sendUserToAPI(groups, email, function (apiResponse) {
             console.log('API response:', apiResponse);
@@ -117,6 +128,48 @@ function listenToCourseLeadsForm() {
     });
 
     console.groupEnd('listenToCourseLeadsForm');
+}
+
+
+
+function styleSubmitButtonLoading() {
+    console.group('styleSubmitButtonLoading');
+
+
+
+    const style = `
+        @keyframes rotate-forever {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        .loading-spinner {
+          animation-duration: 0.75s;
+          animation-iteration-count: infinite;
+          animation-name: rotate-forever;
+          animation-timing-function: linear;
+          height: 30px;
+          width: 30px;
+          border: 8px solid #ffffff;
+          border-right-color: transparent;
+          border-radius: 50%;
+          display: inline-block;
+
+          position: absolute;
+          top: 50%;
+          right: 0;
+          bottom: 0;
+          left: 50%;
+          margin: -15px 0 -15px;
+        }
+    `;
+
+
+    console.groupEnd('styleSubmitButtonLoading');
+
 }
 
 
@@ -197,6 +250,8 @@ function printResponse(response) {
     let $form = $(`#${sectionElementID}`).find('form');
     let $formBody = $($form).find('.form-body');
     let $formResponse = $($form).find('.block__email_leads__response');
+    let $submitButton = $($form).find('button[type="submit"]');
+
     let responseType;
     let message;
     let style = {
@@ -212,6 +267,11 @@ function printResponse(response) {
         }
     };
 
+    $($form).removeClass('_loading');
+    $($submitButton)
+            .text('Subscribe')
+            .attr('style', '')
+            ;
 
     if (!response || !Object.keys(response).length) {
         console.error('[response] argument is invalid or missing! expecting a non-empty object!');
@@ -232,15 +292,13 @@ function printResponse(response) {
     }
 
     let styleString = (function () {
-        let string;
+        let string = '';
         for (let key in style[responseType]) {
-            if (key) {
-                string += `${key}: ${style[responseType][key]}; `;
-            }
+            string += `${key}: ${style[responseType][key]}; `;
         }
         return string;
     }());
-    
+
     console.log('styleString:', styleString);
 
     let html = `
@@ -263,7 +321,6 @@ function printResponse(response) {
     console.groupEnd('printResponse');
 
 }
-
 
 
 
