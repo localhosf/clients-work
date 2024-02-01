@@ -283,5 +283,3 @@ function printResponse(response) {
 
 
 
-
-
