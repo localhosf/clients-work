@@ -6,7 +6,7 @@ const API_endpoint = 'https://script.google.com/macros/s/AKfycbzSuou14R4o_dhqyNX
 const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const groupsRegEx = /^[0-9]+(?:,[0-9]+)*$/;
 const sectionElementID = 'mailterlite-course-mailing-list';
-const coursePath = window.location.pathname.split('p/')[1];
+const coursePath = window.location.pathname.split('/').pop();
 const localStorageName = coursePath + '__subscribed-in-course';
 
 
@@ -263,7 +263,6 @@ function printResponse(response) {
     console.groupEnd('printResponse');
 
 }
-
 
 
 
